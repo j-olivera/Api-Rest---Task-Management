@@ -3,6 +3,7 @@ package com.taskManagement.domain.services;
 import com.taskManagement.domain.entity.User;
 import com.taskManagement.domain.exceptions.UserNotFoundException;
 import com.taskManagement.domain.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @Service
 public class UserService {
-
+    @Autowired
     UserRepository userRepository;
     //GET
     public User getUserById(Long id) {
@@ -49,6 +50,7 @@ public class UserService {
     public User createUser(User user) {
         return userRepository.save(user);
     }
+    //PUT
     public User updateUser(Long id, User user) {
         User user2 = userRepository.findById(id).
                 orElseThrow(()-> new UserNotFoundException("User with id " + id + " not found"));
@@ -57,7 +59,7 @@ public class UserService {
         user2.setFirstName(user.getFirstName());
         user2.setLastName(user.getLastName());
         user2.setActive(user.getActive());
-        user2.setCreatedAt(user.getCreatedAt());
+
         return userRepository.save(user);
     }
     public boolean deleteUser(Long id) {

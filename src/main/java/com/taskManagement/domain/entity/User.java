@@ -32,11 +32,13 @@ public class User {
         this.lastName = lastName;
         this.active = active;
         this.createdAt = LocalDateTime.now();
-        this.active = active;
+
     }
 
     public Long getId() {return id;}
-    public void setId(Long id) {}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUsername() {return username;}
     public void setUsername(String username) {this.username = username;}
@@ -56,4 +58,9 @@ public class User {
     public LocalDateTime getCreatedAt() {return createdAt;}
     public void setCreatedAt(LocalDateTime createdAt) {this.createdAt = createdAt;}
 
+    //
+    @PrePersist
+    public void prePersist(){
+        if(this.createdAt == null){this.createdAt = LocalDateTime.now();}
+    }
 }
