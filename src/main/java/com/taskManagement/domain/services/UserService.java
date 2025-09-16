@@ -2,7 +2,9 @@ package com.taskManagement.domain.services;
 
 import com.taskManagement.domain.entity.User;
 import com.taskManagement.domain.exceptions.UserNotFoundException;
+import com.taskManagement.domain.mapper.UserMapper;
 import com.taskManagement.domain.repository.UserRepository;
+import com.taskManagement.domain.request.UserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,12 +12,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class UserService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    private UserMapper userMapper;
+
     //GET
     public User getUserById(Long id) {
         return userRepository.findById(id).
@@ -48,19 +54,17 @@ public class UserService {
     }
     //POST
     public User createUser(User user) {
+        if(user.getCreatedAt()==null){
+            user.setCreatedAt(LocalDateTime.now());
+        }
         return userRepository.save(user);
     }
     //PUT
-    public User updateUser(Long id, User user) {
+    public User updateUser(Long id, UserRequest userRequest) {
         User user2 = userRepository.findById(id).
                 orElseThrow(()-> new UserNotFoundException("User with id " + id + " not found"));
-        user2.setUsername(user.getUsername());
-        user2.setEmail(user.getEmail());
-        user2.setFirstName(user.getFirstName());
-        user2.setLastName(user.getLastName());
-        user2.setActive(user.getActive());
-
-        return userRepository.save(user);
+        userMapper.updateUserentityFromRequest(userRequest, user2);
+        return userRepository.save(user2);
     }
     public boolean deleteUser(Long id) {
         User userDeleted = userRepository.findById(id).
