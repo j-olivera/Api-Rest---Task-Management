@@ -66,6 +66,7 @@ public class UserService {
         userMapper.updateUserentityFromRequest(userRequest, user2);
         return userRepository.save(user2);
     }
+    //DELETE
     public boolean deleteUser(Long id) {
         User userDeleted = userRepository.findById(id).
                 orElseThrow(()-> new UserNotFoundException("User with id " + id + " not found"));

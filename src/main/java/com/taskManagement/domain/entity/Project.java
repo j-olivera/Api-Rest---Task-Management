@@ -16,10 +16,10 @@ public class Project {
     private String name;
     @Column(length=100)
     private String description;
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name="owner_id")
     private User owner;
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.MERGE)
     private List<User> members;
     @Column()
     private LocalDateTime createdAt;
@@ -61,6 +61,7 @@ public class Project {
 
     public LocalDate getDeadline() {return deadline;}
     public void setDeadline(LocalDate deadline) {this.deadline = deadline;}
+
 
     public ProjectStatus getStatus() {return status;}
     public void setStatus(ProjectStatus status) {this.status = status;}
