@@ -134,5 +134,20 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
-
+    //delete
+    //eliminar tarea
+    public void deletedRask(Long taskId/*Long projectId*/) {
+        Task task = taskRepository.findById(taskId).orElseThrow(()-> new TaskNotFoundException("Task with id: "+taskId+" not found"));
+        //Project project = projectRepository.findById(projectId).orElseThrow(()-> new ProjectNotFoundException("Project with id: "+projectId+" not found"));
+        taskRepository.delete(task);
+    }
+    //eliminar tarea desde un proyecto
+    public Task removeTaskFromProject(Long taskId){
+        Task task = taskRepository.findById(taskId).orElseThrow(()-> new TaskNotFoundException("Task with id: "+taskId+" not found"));
+        task.setProject(null);
+        task.setUpdatedAt(LocalDateTime.now());
+        return taskRepository.save(task);
+    }
+    //eliminar usuario asignado a tal tarea
+    //...
 }

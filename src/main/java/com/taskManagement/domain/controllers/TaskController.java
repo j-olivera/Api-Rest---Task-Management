@@ -1,6 +1,7 @@
 package com.taskManagement.domain.controllers;
 
 import com.taskManagement.domain.entity.Task;
+import com.taskManagement.domain.enums.Priority;
 import com.taskManagement.domain.enums.ProjectStatus;
 import com.taskManagement.domain.enums.TaskStatus;
 import com.taskManagement.domain.mapper.TaskMapper;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -86,4 +88,30 @@ public class TaskController {
                .collect(Collectors.toList());
         return ResponseEntity.ok(taskResponses);
     }
+    @GetMapping("/taskpriority/{priority}")
+    public ResponseEntity<List<TaskResponse>> getAllTasksByPriority(@PathVariable("priority") Priority priority){
+        List<Task> tasks = taskService.getTaskByPriority(priority);
+        List<TaskResponse> taskResponses = tasks.stream()
+                .map(taskMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskResponses);
+    }
+    @GetMapping("/tasktitle/{title}")
+    public ResponseEntity<List<TaskResponse>> getAllTasksByTitle(@PathVariable("title") String title){
+        List<Task> tasks = taskService.getTaskByTitle(title);
+        List<TaskResponse> taskResponses = tasks.stream()
+                .map(taskMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskResponses);
+    }
+    @GetMapping("/duetask/{due}")
+    public ResponseEntity<List<TaskResponse>> getAllTasksByDue(@PathVariable("due") LocalDate due){
+        List<Task> tasks = taskService.getTaskDue(due);
+        List<TaskResponse> taskResponses = tasks.stream()
+                .map(taskMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskResponses);
+    }
+    //PUT
+    //DELETE
 }
