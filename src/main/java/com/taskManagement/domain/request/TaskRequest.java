@@ -1,59 +1,47 @@
-package com.taskManagement.domain.entity;
+package com.taskManagement.domain.request;
 
+import com.taskManagement.domain.entity.Project;
+import com.taskManagement.domain.entity.User;
 import com.taskManagement.domain.enums.Priority;
 import com.taskManagement.domain.enums.TaskStatus;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "task")
-public class Task {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class TaskRequest {
+
     private Long id;
-    @Column(length = 100)
     private String title;
-    @Column(length = 100)
     private String description;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "project_id")
     private Project project;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "assignee_id")
     private User assignee;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "reporter_id")
     private User reporter;
-    @Column()
     private Priority priority;
-    @Column()
     private TaskStatus status;
-    @Column()
     private LocalDateTime createdAt;
-    @Column()
     private LocalDateTime updatedAt;
-    @Column()
     private LocalDate dueDate;
-    @Column()
     private Integer estimatedHours;
 
-    public Task() {}
+    public TaskRequest() {}
 
-    public Task(Long id, String title, String description, Project project, Integer estimatedHours, LocalDate dueDate, LocalDateTime updatedAt, LocalDateTime createdAt, TaskStatus status, Priority priority, User reporter, User assignee) {
+    public TaskRequest(Long id, String title, String description, Project project, User assignee, User reporter, Priority priority, TaskStatus status, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDate dueDate, Integer estimatedHours) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.project = project;
-        this.estimatedHours = estimatedHours;
-        this.dueDate = dueDate;
-        this.updatedAt = updatedAt;
-        this.createdAt = createdAt;
-        this.status = status;
-        this.priority = priority;
-        this.reporter = reporter;
         this.assignee = assignee;
+        this.reporter = reporter;
+        this.priority = priority;
+        this.status = status;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.dueDate = dueDate;
+        this.estimatedHours = estimatedHours;
     }
 
     public Long getId() {
@@ -78,6 +66,30 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public User getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(User assignee) {
+        this.assignee = assignee;
+    }
+
+    public User getReporter() {
+        return reporter;
+    }
+
+    public void setReporter(User reporter) {
+        this.reporter = reporter;
     }
 
     public Priority getPriority() {
@@ -126,29 +138,5 @@ public class Task {
 
     public void setEstimatedHours(Integer estimatedHours) {
         this.estimatedHours = estimatedHours;
-    }
-
-    public User getReporter() {
-        return reporter;
-    }
-
-    public void setReporter(User reporter) {
-        this.reporter = reporter;
-    }
-
-    public User getAssignee() {
-        return assignee;
-    }
-
-    public void setAssignee(User assignee) {
-        this.assignee = assignee;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
     }
 }

@@ -1,7 +1,9 @@
 package com.taskManagement.domain.repository;
 
 import com.taskManagement.domain.entity.Project;
+import com.taskManagement.domain.entity.Task;
 import com.taskManagement.domain.enums.ProjectStatus;
+import com.taskManagement.domain.enums.TaskStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,5 +13,5 @@ import java.util.List;
 public interface ProjectRepository extends JpaRepository<Project,Long> {
     List<Project> findProjectsByOwnerUsername(String ownerUsername);
     List<Project> findProjectsByStatus(ProjectStatus projectStatus);
-    //List<Task> findStadisticTasksByProjectStatus(ProjectStatus projectStatus );
+    //List<Task> findProjectByTaskStatus(TaskStatus taskStatus);
 }

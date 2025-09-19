@@ -27,10 +27,11 @@ public class Project {
     private LocalDate deadline;
     @Column()
     private ProjectStatus status;
-
+    @OneToMany(mappedBy = "project",cascade=CascadeType.ALL, fetch =  FetchType.LAZY)
+    private List<Task> tasks;
     public Project() {}
 
-    public Project(Long id, String name, String description, User owner, List<User> members, LocalDateTime createdAt, LocalDate deadline, ProjectStatus status) {
+    public Project(Long id, String name, String description, User owner, List<User> members, LocalDateTime createdAt, LocalDate deadline, ProjectStatus status, List<Task> tasks) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -39,6 +40,7 @@ public class Project {
         this.createdAt = createdAt;
         this.deadline = deadline;
         this.status = status;
+        this.tasks = tasks;
     }
 
     public Long getId() {return id;}
@@ -66,4 +68,6 @@ public class Project {
     public ProjectStatus getStatus() {return status;}
     public void setStatus(ProjectStatus status) {this.status = status;}
 
+    public List<Task> getTasks() {return tasks;}
+    public void setTasks(List<Task> tasks) {this.tasks = tasks;}
 }

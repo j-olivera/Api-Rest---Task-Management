@@ -81,6 +81,7 @@ public class ProjectService {
         User user = userRepository.findById(userID).orElseThrow(()-> new UserNotFoundException("User not found"));
         List<User> l_user = p.getMembers();
         l_user.remove(user);
+        p.setMembers(l_user);
         return projectRepository.save(p);
     }
 

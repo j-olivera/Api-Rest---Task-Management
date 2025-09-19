@@ -31,7 +31,10 @@ public class ProjectController {
     @Autowired
     private UserMapper userMapper;
 
-    public ProjectController(ProjectService projectService, ProjectMapper projectMapper, UserService userService, UserMapper userMapper) {
+    public ProjectController(ProjectService projectService,
+                             ProjectMapper projectMapper,
+                             UserService userService,
+                             UserMapper userMapper) {
         this.projectService = projectService;
         this.projectMapper = projectMapper;
         this.userService = userService;
@@ -108,7 +111,7 @@ public class ProjectController {
     public ResponseEntity<String> deleteProject(@PathVariable("id") Long id){
         boolean ok = projectService.deleteProject(id);
         if(ok){
-            return ResponseEntity.ok("Project deleted from the project");
+            return ResponseEntity.ok("Project deleted from the DataBase");
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project Not Found");
         }
