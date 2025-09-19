@@ -70,4 +70,45 @@ public class TaskService {
     public List<Task> getTaskByStatus(TaskStatus status) {
         return taskRepository.findByStatus(status);
     }
+
+    public List<Task> getTaskByPriority(Priority priority) {
+        return taskRepository.findByPriority(priority);
+    }
+    public List<Task> getTaskByTitle(String title) {
+        return taskRepository.findByTitle(title);
+    }
+
+    //PUT
+    /* Crear tarea en un proyecto
+       Asignar tarea a un usuario
+       Cambiar status de tarea
+       Cambiar prioridad de tarea
+       Obtener tareas por proyecto/usuario/status
+       Buscar tareas por título
+       Obtener tareas vencidas
+     */
+
+    public Task createTaskOnProject(Task task, Long projectId){
+        if(task==null){throw new IllegalArgumentException("Task cannot be null");}
+        Project project = projectRepository.findById(projectId).orElseThrow(()-> new ProjectNotFoundException("Project with id: "+projectId+" not found"));
+        task.setProject(project);
+        //horarios
+        task.setCreatedAt(LocalDateTime.now());
+        task.setUpdatedAt(LocalDateTime.now());
+        //si no tiene estado, establecerlo
+        if(task.getStatus()==null){
+            task.setStatus(TaskStatus.TODO);
+        }
+
+        return taskRepository.save(task);
+    }
+
+    public Task assignTask(Long taskid, Long userId) {
+        User user_assign = userRepository.findById(userId).orElseThrow(()->new UserNotFoundException("User with id: "+userId+" not found.\nNot possible assigned the task"));
+        Task task = taskRepository.findById(taskid).orElseThrow(()-> new TaskNotFoundException("Task with id: "+taskid+" not found"));
+        task.setAssignee(user_assign);
+        task.setUpdatedAt(LocalDateTime.now());
+        return taskRepository.save(task);
+    }
+
 }
