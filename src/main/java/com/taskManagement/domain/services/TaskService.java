@@ -14,6 +14,7 @@ import com.taskManagement.domain.repository.TaskRepository;
 import com.taskManagement.domain.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -77,15 +78,19 @@ public class TaskService {
     public List<Task> getTaskByTitle(String title) {
         return taskRepository.findByTitle(title);
     }
+    public List<Task> getTaskDue(LocalDate date){
+        return taskRepository.findByDueDate(date);
+    }
 
     //PUT
-    /* Crear tarea en un proyecto
-       Asignar tarea a un usuario
-       Cambiar status de tarea
-       Cambiar prioridad de tarea
-       Obtener tareas por proyecto/usuario/status
-       Buscar tareas por título
-       Obtener tareas vencidas
+    /*
+      PUT Crear tarea en un proyecto
+      PUT Asignar tarea a un usuario
+      PUT Cambiar status de tarea
+      PUT Cambiar prioridad de tarea
+      GET Obtener tareas por proyecto/usuario/status
+      GET Buscar tareas por título
+      GET Obtener tareas vencidas
      */
 
     public Task createTaskOnProject(Task task, Long projectId){
@@ -110,5 +115,24 @@ public class TaskService {
         task.setUpdatedAt(LocalDateTime.now());
         return taskRepository.save(task);
     }
+
+    public Task changeStatus(Long taskId, TaskStatus status) {
+        if(status==null){
+            throw new IllegalArgumentException("TaskStatus cannot be null");
+        }
+        Task task = taskRepository.findById(taskId).orElseThrow(()-> new TaskNotFoundException("Task with id: "+taskId+" not found"));
+        task.setStatus(status);
+        return taskRepository.save(task);
+    }
+
+    public Task changePriority(Long taskId, Priority priority) {
+        if(priority==null){
+            throw new IllegalArgumentException("TaskPriority cannot be null");
+        }
+        Task task = taskRepository.findById(taskId).orElseThrow(()-> new TaskNotFoundException("Task with id: "+taskId+" not found"));
+        task.setPriority(priority);
+        return taskRepository.save(task);
+    }
+
 
 }
