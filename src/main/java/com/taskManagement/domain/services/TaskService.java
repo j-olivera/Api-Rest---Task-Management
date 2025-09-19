@@ -12,6 +12,7 @@ import com.taskManagement.domain.mapper.TaskMapper;
 import com.taskManagement.domain.repository.ProjectRepository;
 import com.taskManagement.domain.repository.TaskRepository;
 import com.taskManagement.domain.repository.UserRepository;
+import com.taskManagement.domain.request.TaskRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -133,13 +134,18 @@ public class TaskService {
         task.setPriority(priority);
         return taskRepository.save(task);
     }
-
+    public Task updateTask(Long id, TaskRequest taskRequest){
+        Task newTask = taskRepository.findById(id).orElseThrow(()-> new TaskNotFoundException("Task with id: "+id+" not found"));
+        taskMapper.updateDateFromRequest(taskRequest, newTask);
+        return taskRepository.save(newTask);
+    }
     //delete
     //eliminar tarea
-    public void deletedRask(Long taskId/*Long projectId*/) {
+    public boolean deletedTask(Long taskId/*Long projectId*/) {
         Task task = taskRepository.findById(taskId).orElseThrow(()-> new TaskNotFoundException("Task with id: "+taskId+" not found"));
         //Project project = projectRepository.findById(projectId).orElseThrow(()-> new ProjectNotFoundException("Project with id: "+projectId+" not found"));
         taskRepository.delete(task);
+        return true;
     }
     //eliminar tarea desde un proyecto
     public Task removeTaskFromProject(Long taskId){
@@ -149,5 +155,11 @@ public class TaskService {
         return taskRepository.save(task);
     }
     //eliminar usuario asignado a tal tarea
+    public Task removeUserAssigneFromProject(Long taskId){
+        Task task = taskRepository.findById(taskId).orElseThrow(()-> new TaskNotFoundException("Task with id: "+taskId+" not found"));
+        task.setAssignee(null);
+        task.setUpdatedAt(LocalDateTime.now());
+        return taskRepository.save(task);
+    }
     //...
 }

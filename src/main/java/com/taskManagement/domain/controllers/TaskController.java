@@ -113,5 +113,61 @@ public class TaskController {
         return ResponseEntity.ok(taskResponses);
     }
     //PUT
+    @PutMapping("/id/{id}")
+    public ResponseEntity<TaskResponse> updateTaskFromRequest(@PathVariable("id") Long taskId, @RequestBody TaskRequest taskRequest){
+        Task updatedTask = taskService.updateTask(taskId,taskRequest);
+        TaskResponse taskResponse = taskMapper.toResponse(updatedTask);
+        return ResponseEntity.ok(taskResponse);
+    }
+    @PutMapping("/project/{id}")
+    public ResponseEntity<TaskResponse> createTaskOnProject(@PathVariable("id") Long id, @RequestBody Task task){
+        Task taskOnProject = taskService.createTaskOnProject(task, id);
+        TaskResponse taskResponse = taskMapper.toResponse(taskOnProject);
+        return ResponseEntity.ok(taskResponse);
+
+    }
+    @PutMapping("/tasks/{taskid}/assign/{userid}")
+    public ResponseEntity<TaskResponse> assignTaskToUser(@PathVariable("taskid") Long taskid, @PathVariable("userid") Long userid){
+        Task task = taskService.assignTask(taskid, userid);
+        TaskResponse taskResponse = taskMapper.toResponse(task);
+        return ResponseEntity.ok(taskResponse);
+    }
+
+    @PutMapping("/task/{taskid}/priotity")
+    public ResponseEntity<TaskResponse> updatePriority(@PathVariable("taskid") Long taskid, @RequestBody Priority priority){
+        Task task = taskService.changePriority(taskid, priority);
+        TaskResponse taskResponse = taskMapper.toResponse(task);
+        return ResponseEntity.ok(taskResponse);
+    }
+    @PutMapping("/task/{taskid}/status")
+    public ResponseEntity<TaskResponse> updateTaskStatus(@PathVariable("taskid") Long taskid, @RequestBody TaskStatus status){
+        Task task = taskService.changeStatus(taskid, status);
+        TaskResponse taskResponse = taskMapper.toResponse(task);
+        return ResponseEntity.ok(taskResponse);
+    }
     //DELETE
+    @DeleteMapping("/id/{id}")
+    public ResponseEntity<String> deleteTask(@PathVariable("id") Long id){
+        boolean ok = taskService.deletedTask(id);
+        if (ok){
+            return ResponseEntity.ok("Task with id: "+id+" deleted successfully");
+        }else{
+            throw new IllegalArgumentException("Bad Request");
+        }
+    }
+    @DeleteMapping("/remove/project/{taskid}")
+    public ResponseEntity<String> removeTaskFromProject(@PathVariable("taskid") Long taskid){
+        Task task = taskService.removeTaskFromProject(taskid);
+        if(task.getProject()==null){
+            return ResponseEntity.ok("Task with id: "+taskid+" removed successfully");
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @DeleteMapping("/remove/assign/{taskid}")
+    public ResponseEntity<String> removeTaskFromAssign(@PathVariable("taskid") Long taskid){
+        Task task = taskService.removeUserAssigneFromProject(taskid);
+        return ResponseEntity.ok("Task with id: "+taskid+" removed successfully");
+    }
 }
