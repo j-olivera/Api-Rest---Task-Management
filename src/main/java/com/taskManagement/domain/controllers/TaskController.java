@@ -1,0 +1,89 @@
+package com.taskManagement.domain.controllers;
+
+import com.taskManagement.domain.entity.Task;
+import com.taskManagement.domain.enums.ProjectStatus;
+import com.taskManagement.domain.enums.TaskStatus;
+import com.taskManagement.domain.mapper.TaskMapper;
+import com.taskManagement.domain.request.TaskRequest;
+import com.taskManagement.domain.response.ProjectResponse;
+import com.taskManagement.domain.response.TaskResponse;
+import com.taskManagement.domain.services.ProjectService;
+import com.taskManagement.domain.services.TaskService;
+import com.taskManagement.domain.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping("api/task")
+public class TaskController {
+    @Autowired
+    TaskService taskService;
+    @Autowired
+    TaskMapper taskMapper;
+    @Autowired
+    ProjectService projectService;
+    @Autowired
+    UserService userService;
+
+    public TaskController(TaskService taskService, TaskMapper taskMapper) {
+        this.taskService = taskService;
+        this.taskMapper = taskMapper;
+    }
+
+    //POST
+    @PostMapping("/create")
+    public ResponseEntity<TaskResponse> createTask(TaskRequest taskRequest){
+        Task task = taskMapper.toEntity(taskRequest);//se crea entidad
+        Task createdTask = taskService.createTask(task);//se guarda en la bd
+        TaskResponse taskResponse = taskMapper.toResponse(createdTask); //lo mapeamos
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskResponse);
+    }
+
+    //GET
+    @GetMapping("/id/{id}")
+    public ResponseEntity<TaskResponse> getTaskById(@PathVariable("id") Long id){
+        Task task = taskService.getTaskById(id);
+        TaskResponse taskResponse = taskMapper.toResponse(task);
+        return ResponseEntity.ok(taskResponse);
+    }
+    @GetMapping("/tasks")
+    public ResponseEntity<List<TaskResponse>> getAllTasks(){
+        List<Task> tasks = taskService.getAllTasks();
+        List<TaskResponse> taskResponses = tasks.stream()
+                .map(taskMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskResponses);
+    }
+    @GetMapping("/projectID/{id}")
+    public ResponseEntity<List<TaskResponse>> getAllProjectsById(@PathVariable("id") Long id){
+        List<Task> tasks = taskService.getTaskByProjectId(id);
+        List<TaskResponse> taskResponses = tasks
+                .stream()
+                .map(taskMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskResponses);
+    }
+    @GetMapping("/assigneID/{id}")
+    public ResponseEntity<List<TaskResponse>> getAllAssigneesById(@PathVariable("id") Long id){
+        List<Task> tasks = taskService.getTaskByAssigneeId(id);
+        List<TaskResponse> taskResponses = tasks.stream()
+                .map(taskMapper::toResponse)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(taskResponses);
+    }
+    @GetMapping("/taskstatus/{status}")
+    public ResponseEntity<List<TaskResponse>> getAllTasksByStatus(@PathVariable("status") TaskStatus status){
+       List<Task> tasks = taskService.getTaskByStatus(status);
+       List<TaskResponse> taskResponses = tasks
+               .stream()
+               .map(taskMapper::toResponse)
+               .collect(Collectors.toList());
+        return ResponseEntity.ok(taskResponses);
+    }
+}
